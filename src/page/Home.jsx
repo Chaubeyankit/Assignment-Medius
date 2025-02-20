@@ -1,15 +1,15 @@
-import { useState } from "react";
+import { useState, useCallback, memo } from "react";
 import { Button } from "@/components/ui/button";
+import homePageImg from "@/assets/home-page-img.webp";
+import Arina from "@/assets/still-quote-Arian.webp";
+import { Icons } from "@/icon/icons";
 
-import { Star } from "lucide-react";
-
-export function Home() {
+export const Home = memo(function Home() {
   // Testimonial Data
   const testimonials = [
     {
       name: "Arina",
-      image:
-        "https://media.better.com/better-com/homepage/social-proof/still-quote-Arian.webp",
+      image: Arina,
       quote:
         "Better made my home-buying experience incredibly easy and stress-free!",
     },
@@ -34,17 +34,16 @@ export function Home() {
     testimonials[0]
   );
 
+  const handleTestimonialChange = useCallback((t) => {
+    setSelectedTestimonial(t);
+  }, []);
+
   return (
     <div className="w-full">
       {/* Hero Section */}
       <div
-        className="relative w-full h-screen flex items-center justify-center text-white text-center"
-        style={{
-          backgroundImage:
-            "url('https://media.better.com/better-com/homepage/hero-variant-c.webp')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
+        className="relative w-full h-screen flex items-center justify-center text-white text-center bg-cover bg-center"
+        style={{ backgroundImage: `url(${homePageImg})` }}
       >
         {/* Overlay for better readability */}
         <div className="absolute inset-0 bg-green-900 opacity-50"></div>
@@ -69,12 +68,12 @@ export function Home() {
           {/* Star Rating */}
           <div className="mt-4 flex items-center justify-center gap-1">
             {[...Array(4)].map((_, i) => (
-              <Star
+              <Icons.Star
                 key={i}
                 className="w-6 h-6 fill-yellow-400 text-yellow-400"
               />
             ))}
-            <Star className="w-6 h-6 fill-yellow-400 text-yellow-400 opacity-70" />
+            <Icons.Star className="w-6 h-6 fill-yellow-400 text-yellow-400 opacity-70" />
             <span className="ml-2 text-xl font-semibold">4.5 / 5</span>
           </div>
         </div>
@@ -89,6 +88,7 @@ export function Home() {
               src={selectedTestimonial.image}
               alt={selectedTestimonial.name}
               className="w-80 h-auto max-h-80 object-contain rounded-2xl shadow-lg transition-all duration-300"
+              loading="lazy"
             />
 
             {/* Testimonial Selection Buttons */}
@@ -99,7 +99,7 @@ export function Home() {
                   variant={
                     selectedTestimonial.name === t.name ? "default" : "outline"
                   }
-                  onClick={() => setSelectedTestimonial(t)}
+                  onClick={() => handleTestimonialChange(t)}
                   className="px-4 py-2 text-lg font-medium"
                 >
                   {t.name}
@@ -122,12 +122,12 @@ export function Home() {
             {/* Star Rating */}
             <div className="flex items-center gap-1 mt-3">
               {[...Array(4)].map((_, i) => (
-                <Star
+                <Icons.Star
                   key={i}
                   className="w-5 h-5 fill-yellow-400 text-yellow-400"
                 />
               ))}
-              <Star className="w-5 h-5 fill-yellow-400 text-yellow-400 opacity-70" />
+              <Icons.Star className="w-5 h-5 fill-yellow-400 text-yellow-400 opacity-70" />
               <span className="ml-2 text-lg font-semibold text-gray-700">
                 Excellence 4.5 / 5
               </span>
@@ -137,4 +137,4 @@ export function Home() {
       </div>
     </div>
   );
-}
+});

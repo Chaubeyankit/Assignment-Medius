@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { CheckCircle, Home, DollarSign, RefreshCw } from "lucide-react";
+import { Icons } from "@/icon/icons";
 
 export function Start() {
   return (
@@ -16,15 +16,15 @@ export function Start() {
         {/* Options: Buy, Refinance, Get Cash */}
         <div className="mt-10 grid md:grid-cols-3 gap-6 w-full max-w-4xl">
           {[
-            { title: "Buying a Home", icon: Home, color: "bg-blue-500" },
+            { title: "Buying a Home", icon: Icons.Home, color: "bg-blue-500" },
             {
               title: "Refinance My Mortgage",
-              icon: RefreshCw,
+              icon: Icons.RefreshCw,
               color: "bg-yellow-500",
             },
             {
               title: "Get Cash from My Home",
-              icon: DollarSign,
+              icon: Icons.DollarSign,
               color: "bg-red-500",
             },
           ].map((option, index) => (
@@ -81,7 +81,7 @@ export function Start() {
                 className="flex items-center gap-3 bg-gray-100 px-6 py-4 rounded-lg shadow-md"
                 whileHover={{ scale: 1.05 }}
               >
-                <CheckCircle className="text-green-600" size={30} />
+                <Icons.CheckCircle className="text-green-600" size={30} />
                 <p className="text-lg font-semibold">{benefit}</p>
               </motion.div>
             ))}

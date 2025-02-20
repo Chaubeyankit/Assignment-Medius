@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -13,13 +13,23 @@ export function MortgageCalculator() {
   const [interestRate, setInterestRate] = useState("");
   const [loanTerm, setLoanTerm] = useState("");
 
-  // Optimized calculation using useMemo
+  // Prevent unnecessary re-renders using useCallback
+  const handleChange = useCallback(
+    (setter) => (e) => {
+      const value = e.target.value;
+      const num = parseFloat(value);
+      setter(isNaN(num) || num < 0 ? "" : value); // Prevents negative and invalid values
+    },
+    []
+  );
+
+  // Optimized mortgage calculation
   const monthlyPayment = useMemo(() => {
+    if (!loanAmount || !interestRate || !loanTerm) return null;
+
     const principal = parseFloat(loanAmount);
     const rate = parseFloat(interestRate) / 100 / 12;
     const months = parseInt(loanTerm) * 12;
-
-    if (!principal || !rate || !months) return null;
 
     return rate === 0
       ? principal / months
@@ -28,7 +38,7 @@ export function MortgageCalculator() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-12 p-6">
-      {/* 🔵 SECTION 1: Mortgage Calculator */}
+      {/* Mortgage Calculator */}
       <Card className="shadow-xl p-6">
         <CardHeader>
           <CardTitle className="text-2xl text-center font-bold">
@@ -37,7 +47,7 @@ export function MortgageCalculator() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {/* Loan Amount Input */}
+            {/* Loan Amount */}
             <div>
               <label className="block font-medium text-gray-700">
                 Loan Amount ($)
@@ -45,12 +55,15 @@ export function MortgageCalculator() {
               <Input
                 type="number"
                 value={loanAmount}
-                onChange={(e) => setLoanAmount(e.target.value)}
+                onChange={handleChange(setLoanAmount)}
                 placeholder="Enter loan amount"
               />
+              {!loanAmount && (
+                <p className="text-red-500 text-sm">Loan amount is required.</p>
+              )}
             </div>
 
-            {/* Interest Rate Input */}
+            {/* Interest Rate */}
             <div>
               <label className="block font-medium text-gray-700">
                 Interest Rate (%)
@@ -59,12 +72,17 @@ export function MortgageCalculator() {
                 type="number"
                 step="0.01"
                 value={interestRate}
-                onChange={(e) => setInterestRate(e.target.value)}
+                onChange={handleChange(setInterestRate)}
                 placeholder="Enter interest rate"
               />
+              {!interestRate && (
+                <p className="text-red-500 text-sm">
+                  Interest rate is required.
+                </p>
+              )}
             </div>
 
-            {/* Loan Term Input */}
+            {/* Loan Term */}
             <div>
               <label className="block font-medium text-gray-700">
                 Loan Term (Years)
@@ -72,9 +90,12 @@ export function MortgageCalculator() {
               <Input
                 type="number"
                 value={loanTerm}
-                onChange={(e) => setLoanTerm(e.target.value)}
+                onChange={handleChange(setLoanTerm)}
                 placeholder="Enter loan term"
               />
+              {!loanTerm && (
+                <p className="text-red-500 text-sm">Loan term is required.</p>
+              )}
             </div>
 
             {/* Display Monthly Payment */}
@@ -92,7 +113,7 @@ export function MortgageCalculator() {
         </CardContent>
       </Card>
 
-      {/* 🔵 SECTION 2: How Mortgage Calculation Works */}
+      {/* How Mortgage Calculation Works */}
       <Card className="shadow-lg p-6">
         <CardHeader>
           <CardTitle className="text-xl font-bold">
@@ -101,8 +122,8 @@ export function MortgageCalculator() {
         </CardHeader>
         <CardContent>
           <p className="text-gray-700">
-            The mortgage formula calculates monthly payments based on the **loan
-            amount, interest rate, and loan term**.
+            The mortgage formula calculates monthly payments based on the{" "}
+            <strong>loan amount, interest rate, and loan term</strong>.
           </p>
 
           <div className="mt-4 p-4 bg-gray-100 rounded-lg">
@@ -128,7 +149,7 @@ export function MortgageCalculator() {
         </CardContent>
       </Card>
 
-      {/* 🔵 SECTION 3: Taxes & Additional Costs */}
+      {/* Taxes & Additional Costs */}
       <Card className="shadow-lg p-6">
         <CardHeader>
           <CardTitle className="text-xl font-bold">
@@ -137,17 +158,18 @@ export function MortgageCalculator() {
         </CardHeader>
         <CardContent>
           <p className="text-gray-700">
-            Besides the principal and interest, mortgages often include
-            **additional costs** such as:
+            Besides the principal and interest, mortgages often include{" "}
+            <strong>additional costs</strong> such as:
           </p>
 
-          {/* Tax Breakdown using Accordion */}
+          {/* Tax Breakdown Accordion */}
           <Accordion type="single" collapsible className="mt-4">
             <AccordionItem value="taxes">
               <AccordionTrigger>Property Taxes</AccordionTrigger>
               <AccordionContent>
-                Most mortgages include **property tax payments** in monthly
-                bills. The lender pays these taxes on behalf of the borrower.
+                Most mortgages include <strong>property tax payments</strong> in
+                monthly bills. The lender pays these taxes on behalf of the
+                borrower.
               </AccordionContent>
             </AccordionItem>
 
